@@ -1,0 +1,19 @@
+.container2 {
+    width: 1400px;
+    margin-right: auto;
+    margin-left: auto;
+    border:1px solid black;
+}
+
+.application{
+    margin: auto;
+    width : 1500px;
+}
+
+#toolbar, #menu{
+    border:1px solid black;
+}
+
+canvas {
+    border:1px solid black;
+}
