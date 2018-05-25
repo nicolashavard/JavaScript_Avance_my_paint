@@ -8,6 +8,8 @@ var ctx;
 var tool = "pencil";
 var line = true;
 var fill = false;
+var sym_V = false;
+var sym_H = false;
 
 
 function init() {
@@ -58,13 +60,6 @@ $('.tool').click(function(e) {
             console.log(fill);
             if(fill){
                 $('#toolbar').append("<input class='form-control' id='colorfill' type='color' value='" + $('#colorpick').val() + "'><label id='colorfilllabel' for='colorfill'>Couleur de remplissage</label>");
-                // console.log('debut');
-                // console.log($('#colorpick').val());
-                // $('#colorfill').value = $('#colorpick').val();
-                // console.log($('#colorfill').val());
-                // $('#colorfill').change(function() {
-                //     console.log(this.value);
-                // })
             } else {
                 $('#colorfill').remove();
                 $('#colorfilllabel').remove();
@@ -73,6 +68,12 @@ $('.tool').click(function(e) {
     } else if(tool === 'clear') {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         tool = 'pencil';
+    } else if(tool === 'sym_h') {
+        sym_H = !sym_H;
+        console.log('sym h ok');
+    }else if(tool === 'sym_v') {
+        sym_V = !sym_V;
+        console.log('sym v ok');
     }
 });
 
@@ -108,49 +109,53 @@ function readURL(input) {
 
 // todo getImageData()
 function Draw(x, y, isDown) {
-    console.log(tool);
+    ctx.beginPath();
+    ctx.strokeStyle = $('#colorpick').val();
+    ctx.lineWidth = $('#sizepick').val();
+    ctx.lineJoin = "round";
     if (isDown) {
-        ctx.beginPath();
-        ctx.strokeStyle = $('#colorpick').val();
-        ctx.lineWidth = $('#sizepick').val();
-        ctx.lineJoin = "round";
         if(tool === 'eraser'){
-            ctx.globalCompositeOperation="destination-out";
-            ctx.moveTo(lastX, lastY);
-            ctx.lineTo(x, y);
-            ctx.closePath();
-            ctx.stroke();
+            ctx.globalCompositeOperation="destination-out"
         } else {
             ctx.globalCompositeOperation="source-over";
-            ctx.moveTo(lastX, lastY);
-            ctx.lineTo(x, y);
-            ctx.closePath();
-            ctx.stroke();
         }
-    }
-    else{
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(x, y);
+        if(sym_H && sym_V) {
+            ctx.moveTo(canvas.width - lastX, canvas.height - lastY);
+            ctx.lineTo(canvas.width - x, canvas.height - y);
+        }
+        if(sym_H){
+            ctx.moveTo(lastX, canvas.height - lastY);
+            ctx.lineTo(x, canvas.height - y);
+        }
+        if(sym_V) {
+            ctx.moveTo(canvas.width - lastX, lastY);
+            ctx.lineTo(canvas.width - x, y);
+        }
+    } else if(tool === 'eraser' || tool === 'pencil'){
         if(tool === 'eraser') {
             ctx.globalCompositeOperation="destination-out";
-            ctx.beginPath();
-            ctx.strokeStyle = $('#colorpick').val();
-            ctx.lineWidth = $('#sizepick').val();
-            ctx.lineJoin = "round";
-            ctx.moveTo(x, y);
-            ctx.arc(x, y, 0.1, 0, Math.PI * 2, false);
-            ctx.closePath();
-            ctx.stroke();
+        } else {
+            ctx.globalCompositeOperation="source-over";
         }
-        else {
-            ctx.beginPath();
-            ctx.strokeStyle = $('#colorpick').val();
-            ctx.lineWidth = $('#sizepick').val();
-            ctx.lineJoin = "round";
-            ctx.moveTo(x, y);
-            ctx.arc(x, y, 0.1, 0, Math.PI * 2, false);
-            ctx.closePath();
-            ctx.stroke();
+        ctx.moveTo(x, y);
+        ctx.arc(x, y, 0.1, 0, Math.PI * 2, false);
+        if(sym_H && sym_V) {
+            ctx.moveTo(canvas.width - x, canvas.height - y);
+            ctx.arc(canvas.width - x, canvas.height - y, 0.1, 0, Math.PI * 2, false);
+        }
+        if(sym_H){
+            ctx.moveTo(x, canvas.height - y);
+            ctx.arc(x, canvas.height - y, 0.1, 0, Math.PI * 2, false);
+        }
+        if(sym_V) {
+            ctx.moveTo(canvas.width - x, y);
+            ctx.arc(canvas.width - x, y, 0.1, 0, Math.PI * 2, false);
         }
     }
+    ctx.closePath();
+    ctx.stroke();
     lastX = x; lastY = y;
 }
 
@@ -159,25 +164,32 @@ function drawLine(x, y){
     ctx.beginPath();
     ctx.strokeStyle = $('#colorpick').val();
     ctx.lineWidth = $('#sizepick').val();
-    ctx.lineJoin = "round";
+    ctx.lineJoin = ctx.lineCap = "round";
     if(line) {
         ctx.moveTo(x, y);
-        ctx.arc(x,y,0.1,0,Math.PI*2,false);
-        ctx.closePath();
-        ctx.stroke();
         lastX = x;
         lastY = y;
         line = false;
     } else {
         ctx.globalCompositeOperation="source-over";
-        console.log(lastX, lastY);
         ctx.moveTo(lastX, lastY);
         ctx.lineTo(x, y);
-        ctx.closePath();
-        ctx.stroke();
-
+        if(sym_H && sym_V) {
+            ctx.moveTo(canvas.width - lastX, canvas.height - lastY);
+            ctx.lineTo(canvas.width - x, canvas.height - y);
+        }
+        if(sym_H){
+            ctx.moveTo(lastX, canvas.height - lastY);
+            ctx.lineTo(x, canvas.height - y);
+        }
+        if(sym_V) {
+            ctx.moveTo(canvas.width - lastX, lastY);
+            ctx.lineTo(canvas.width - x, y);
+        }
         line = true
     }
+    ctx.closePath();
+    ctx.stroke();
 }
 
 function drawRec(x, y){
@@ -188,25 +200,31 @@ function drawRec(x, y){
     ctx.lineJoin = "miter";
     if(line) {
         ctx.moveTo(x, y);
-        ctx.closePath();
-        ctx.stroke();
         lastX = x;
         lastY = y;
         line = false;
     } else {
         ctx.globalCompositeOperation="source-over";
-        console.log(lastX, lastY);
         ctx.rect(lastX,lastY,(x - lastX),(y - lastY));
-        ctx.closePath();
+        if(sym_H && sym_V) {
+            ctx.moveTo(canvas.width - lastX, canvas.height - lastY);
+            ctx.rect(canvas.width - lastX, canvas.height - lastY,(-(x - lastX)),(-(y - lastY)));
+        }
+        if(sym_H){
+            ctx.moveTo(lastX, canvas.height - lastY);
+            ctx.rect(lastX, canvas.height - lastY,(x - lastX),(-(y - lastY)));
+        }
+        if(sym_V) {
+            ctx.moveTo(canvas.width - lastX, lastY);
+            ctx.rect(canvas.width - lastX,lastY,(-(x - lastX)),(y - lastY));
+        }
         if(fill) {
             console.log(fill);
             ctx.fillStyle = $('#colorfill').val();
             ctx.fill();
-            ctx.stroke();
-        } else {
-            ctx.stroke();
-            console.log(fill);
         }
+        ctx.closePath();
+        ctx.stroke();
         line = true
     }
 }
@@ -219,7 +237,6 @@ function drawCircle(x, y){
     ctx.lineJoin = "round";
     if(line) {
         ctx.moveTo(x, y);
-        ctx.closePath();
         lastX = x;
         lastY = y;
         line = false;
@@ -227,9 +244,24 @@ function drawCircle(x, y){
         ctx.globalCompositeOperation="source-over";
         var rayon = Math.sqrt(Math.pow(lastX - x, 2) + Math.pow(lastY - y, 2));
         ctx.arc(lastX,lastY,rayon,0,Math.PI*2,false);
-        // ctx.ellipse(lastX, lastY, 30, 30);
-        ctx.closePath();
-        ctx.stroke();
-        line = true
+        if(sym_H && sym_V) {
+            ctx.moveTo(canvas.width - lastX, canvas.height - lastY);
+            ctx.arc(canvas.width - lastX, canvas.height - lastY,rayon,0,Math.PI*2,false);
+        }
+        if(sym_H){
+            ctx.moveTo(lastX, canvas.height - lastY);
+            ctx.arc(lastX, canvas.height - lastY,rayon,0,Math.PI*2,false);
+        }
+        if(sym_V) {
+            ctx.moveTo(canvas.width - lastX, lastY);
+            ctx.arc(canvas.width - lastX,lastY,rayon,0,Math.PI*2,false);
+        }
+        if(fill) {
+            ctx.fillStyle = $('#colorfill').val();
+            ctx.fill();
+        }
+        line = true;
     }
+    ctx.closePath();
+    ctx.stroke();
 }
