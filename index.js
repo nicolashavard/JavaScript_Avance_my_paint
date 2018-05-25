@@ -10,6 +10,9 @@ var line = true;
 var fill = false;
 var sym_V = false;
 var sym_H = false;
+var cStep = -1;
+var layers = [[]];
+var lStep = 0;
 
 
 function init() {
@@ -37,6 +40,11 @@ function init() {
 
     canvas.mouseup(function (e) {
         mousePressed = false;
+        if(line)
+            cPush();
+        console.log(layers);
+        console.log('canvas step = ' + cStep);
+        console.log('layers step = ' + lStep);
     });
 
     canvas.mouseleave(function (e) {
@@ -90,6 +98,39 @@ $('#download').click(function () {
     this.download = 'my_paint.png';
     this.href = image;
 });
+
+function cPush() {
+    cStep++;
+    if (cStep < layers[lStep].length)
+        layers[lStep].length = cStep;
+    layers[lStep].push(canvas.toDataURL());
+}
+
+function cUndo() {
+    if (cStep >= 0) {
+        cStep--;
+        var canvasPic = new Image();
+        canvasPic.src = layers[lStep][cStep];
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvasPic.onload = function () { ctx.drawImage(canvasPic, 0, 0); }
+    }
+}
+
+function cRedo() {
+    if (cStep < layers[lStep].length-1) {
+        cStep++;
+        var canvasPic = new Image();
+        canvasPic.src = layers[lStep][cStep];
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvasPic.onload = function () { ctx.drawImage(canvasPic, 0, 0); }
+    }
+}
+
+function nLayer() {
+    layers.push([]);
+    cStep = -1;
+    lStep++;
+}
 
 function readURL(input) {
 

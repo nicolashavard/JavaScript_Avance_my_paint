@@ -11,7 +11,22 @@
 
 <div class="application">
     <h1>Paint</h1>
-    <p>menu</p>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Calques
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Calque 1</a>
+                        <a class="dropdown-item" href="#">Calque 2</a>
+                        <a class="dropdown-item" href="#">Calque 3</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
     <div class="row">
         <div id="toolbar" class="col-1 form-group">
             <button class="tool btn btn-dark" value="pencil"><i class="fas fa-pencil-alt"></i></button>
@@ -22,6 +37,9 @@
             <button class="tool btn btn-dark" value="circle"><i class="far fa-circle"></i></button>
             <button class="tool btn btn-dark" value="sym_v"><i class="fab fa-vimeo-v"></i></button>
             <button class="tool btn btn-dark" value="sym_h"><i class="fab fa-hire-a-helper"></i></button>
+            <button class="btn btn-dark" onclick="nLayer()"><i class="fas fa-file-medical"></i></button>
+            <button class="btn btn-dark" onclick="cUndo()">Undo</button>
+            <button class="btn btn-dark" onclick="cRedo()">Redo</button>
             <input class="form-control" id="colorpick" type="color"><label for="colorpick"></label>
             <input class="form-control" id="sizepick" type="range" value="10" min="1" max="500"><label for="sizepick"></label>
             <input class="form-control" id="import" type="file" style="visibility: hidden; display:none"><label class="btn btn-dark" for="import">Parcourir</label>
@@ -30,8 +48,7 @@
         <div id="candiv" class="col-11">
             <div id="hbarre"></div>
             <div id="vbarre"></div>
-            <canvas id="canvas" width="1400" height="800">
-            </canvas>
+            <canvas class="canvas" id="canvas" width="1400" height="800"></canvas>
         </div>
     </div>
 </div>

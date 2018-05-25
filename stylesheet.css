@@ -39,3 +39,7 @@ canvas {
     width: 1400px;
     height: 402px;
 }
+
+.canvas {
+ position: absolute;
+}
