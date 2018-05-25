@@ -48,7 +48,6 @@ function init() {
 $('.tool').click(function(e) {
     line = true;
     tool = this.value;
-    console.log(tool);
     $('#checkbox').remove();
     $('#checkboxlabel').remove();
     $('#colorfill').remove();
@@ -57,7 +56,6 @@ $('.tool').click(function(e) {
         $('#toolbar').append('<input id="checkbox" type="checkbox"><label id="checkboxlabel" for="checkbox">Fill</label>');
         $('#checkbox').change(function(){
             fill = !fill;
-            console.log(fill);
             if(fill){
                 $('#toolbar').append("<input class='form-control' id='colorfill' type='color' value='" + $('#colorpick').val() + "'><label id='colorfilllabel' for='colorfill'>Couleur de remplissage</label>");
             } else {
@@ -70,10 +68,16 @@ $('.tool').click(function(e) {
         tool = 'pencil';
     } else if(tool === 'sym_h') {
         sym_H = !sym_H;
-        console.log('sym h ok');
+        if(sym_H)
+            $('#hbarre').show();
+        else
+            $('#hbarre').hide();
     }else if(tool === 'sym_v') {
         sym_V = !sym_V;
-        console.log('sym v ok');
+        if(sym_V)
+            $('#vbarre').show();
+        else
+            $('#vbarre').hide();
     }
 });
 
@@ -103,7 +107,6 @@ function readURL(input) {
 }
 
 function trace(mx, my, lx, ly, circle = false) {
-    console.log(circle);
     ctx.beginPath();
     ctx.strokeStyle = $('#colorpick').val();
     ctx.lineWidth = $('#sizepick').val();
@@ -174,7 +177,7 @@ function drawLine(x, y){
             trace(lastX, canvas.height - lastY, x, canvas.height - y);
         }
         if(sym_H && sym_V) {
-            trace(canvas.width - lastX, canvas.height - lastY, canvas.width - x, canvas.height - y);;
+            trace(canvas.width - lastX, canvas.height - lastY, canvas.width - x, canvas.height - y);
         }
         line = true
     }
@@ -207,7 +210,6 @@ function drawRec(x, y){
             ctx.rect(canvas.width - lastX,lastY,(-(x - lastX)),(y - lastY));
         }
         if(fill) {
-            console.log(fill);
             ctx.fillStyle = $('#colorfill').val();
             ctx.fill();
         }
