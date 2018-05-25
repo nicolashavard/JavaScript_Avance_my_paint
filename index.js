@@ -81,6 +81,12 @@ $('#import').change(function(){
     readURL(this);
 });
 
+$('#download').click(function () {
+    var image = canvas.toDataURL("image/png");
+    this.download = 'my_paint.png';
+    this.href = image;
+});
+
 function readURL(input) {
 
     if (input.files && input.files[0]) {
@@ -139,18 +145,13 @@ function Draw(x, y, isDown) {
         }
         trace(x, y, x, y, true);
         if(sym_H && sym_V) {
-            // ctx.moveTo(canvas.width - x, canvas.height - y);
-            // ctx.arc(canvas.width - x, canvas.height - y, 0.1, 0, Math.PI * 2, false);
+
             trace(canvas.width - x, canvas.height - y, canvas.width - x, canvas.height - y, true);
         }
         if(sym_H){
-            // ctx.moveTo(x, canvas.height - y);
-            // ctx.arc(x, canvas.height - y, 0.1, 0, Math.PI * 2, false);
             trace(x, canvas.height - y, x, canvas.height - y, true);
         }
         if(sym_V) {
-            // ctx.moveTo(canvas.width - x, y);
-            // ctx.arc(canvas.width - x, y, 0.1, 0, Math.PI * 2, false);
             trace(canvas.width - x, y, canvas.width - x, y, true);
         }
     }
